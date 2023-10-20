@@ -1,0 +1,45 @@
+.main {
+  padding: 6rem;
+  min-height: 100vh;
+}
+
+.ad {
+  border: 2px dashed blue;
+  padding: 0.5rem 1rem;
+}
+
+.nav {
+  margin: 2rem 0;
+  padding: 0 1rem;
+  text-transform: uppercase;
+}
+
+.section {
+  margin: 2rem 0;
+}
+
+.example {
+  color: greenyellow;
+  font-size: 1.5rem;
+}
+
+.formRow {
+  margin: 0.4rem 0;
+}
+
+.input {
+  margin: 0 0.5rem;
+  width: 5rem;
+}
+
+.btnRow {
+  margin: 1rem 0;
+}
+
+.btn {
+  padding: 0.5rem;
+}
+
+.btn + .btn {
+  margin-left: 1rem;
+}
