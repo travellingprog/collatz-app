@@ -37,12 +37,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section className={styles.section}>
-          <Link href="/collatz-conjecture">
-            Learn more about the Collatz Conjecture
-          </Link>
-        </section>
-
         <footer className={styles.footer}>
           By Viktor Zivojinovic
           <br />
