@@ -27,6 +27,16 @@
   margin: 0.4rem 0;
 }
 
+.evenWarning {
+  composes: formRow;
+  color: gold;
+}
+
+.updateWarning {
+  composes: formRow;
+  color: orangered;
+}
+
 .input {
   margin: 0 0.5rem;
   width: 5rem;
@@ -42,4 +52,34 @@
 
 .btn + .btn {
   margin-left: 1rem;
+}
+
+.resetRow {
+  margin: 4rem 0 2rem;
+}
+
+.equation {
+  font-size: 1.25rem;
+  margin: 1rem 0;
+  line-height: 1.75rem;
+}
+
+.equation > strong {
+  color: aqua;
+  font-size: 1.5rem;
+}
+
+.loop {
+  border: 2px solid cadetblue;
+  color: dodgerblue;
+  font-family: monospace;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  max-height: 30rem;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.even {
+  color: greenyellow;
 }
