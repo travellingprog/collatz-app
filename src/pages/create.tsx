@@ -1,14 +1,12 @@
 import { bignumber as big } from "mathjs";
 import Head from "next/head";
 import Link from "next/link";
-import { Inter } from "next/font/google";
 import { useMemo, useState, ChangeEvent, FormEvent } from "react";
 
 import { Loop } from "@/lib/collatzLoop";
 import styles from "@/styles/Create.module.css";
 
 let idCounter = 1;
-const inter = Inter({ subsets: ["latin"] });
 
 type EvenSegment = {
   id: number;
@@ -123,11 +121,9 @@ export default function Create() {
           name="description"
           content="Create your own Collatz Loop with your desired behavior"
         />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={`${styles.main} ${inter.className}`}>
+      <main className={styles.main}>
         <section className={styles.ad}>[AD HERE]</section>
 
         <nav className={styles.nav}>
