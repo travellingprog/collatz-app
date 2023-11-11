@@ -1,12 +1,13 @@
-import { CacheProvider, EmotionCache } from "@emotion/react";
 import CssBaseline from "@mui/material/CssBaseline";
+import { CacheProvider, EmotionCache } from "@emotion/react";
 import { ThemeProvider } from "@mui/material/styles";
 import type { AppProps } from "next/app";
 
+import AppLayout, { StaticProps } from "@/components/AppLayout";
 import theme from "@/lib/theme";
 import createEmotionCache from "@/lib/emotionCache";
 
-export interface MyAppProps extends AppProps {
+export interface MyAppProps extends AppProps<StaticProps> {
   emotionCache?: EmotionCache;
 }
 
@@ -20,7 +21,9 @@ export default function App(props: MyAppProps) {
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Component {...pageProps} />
+        <AppLayout title={pageProps.title} description={pageProps.description}>
+          <Component />
+        </AppLayout>
       </ThemeProvider>
     </CacheProvider>
   );

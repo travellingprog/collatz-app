@@ -1,48 +1,86 @@
-import Head from "next/head";
-import Link from "next/link";
-import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
 
-const inter = Inter({ subsets: ["latin"] });
+import Link from "@/components/Link";
+import type { StaticRequired } from "@/components/AppLayout";
+
+export const getStaticProps = (async () => {
+  return {
+    props: {
+      description: "Create your own Collatz Loop with your desired behavior",
+    },
+  };
+}) satisfies StaticRequired;
+
+const Title = styled("h1")(({ theme }) => ({
+  color: theme.palette.primary.light,
+  fontSize: "6rem",
+  marginBottom: "1rem",
+}));
 
 export default function Home() {
   return (
-    <>
-      <Head>
-        <title>Collatz Loops</title>
-        <meta
-          name="description"
-          content="Create your own Collatz Loop with your desired behavior"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <Container maxWidth="lg" sx={{ marginY: 8 }}>
+      <Box component="header" textAlign="center">
+        <Typography variant="h1" component="div">
+          <Box component="span" color="primary.light">
+            3
+          </Box>
+          X +{" "}
+          <Box component="span" color="secondary.light">
+            1
+          </Box>
+        </Typography>
+        <Typography variant="subtitle1" component="div">
+          1 4 2 1 4 2 1 4 2 1 4 2 1 4 2 1
+        </Typography>
+        <Title>
+          Collatz{" "}
+          <Box component="span" color="secondary.light">
+            Loops
+          </Box>
+        </Title>
+      </Box>
 
-      <main className={`${styles.main} ${inter.className}`}>
-        <header>
-          <div>3X + 1</div>
-          <div>1 4 2 1 4 2 1 4 2 1 4 2 1 4 2 1</div>
-          <h1>Collatz Loops</h1>
-        </header>
+      <Box component="section" textAlign="center">
+        <Typography variant="h3" component="div">
+          Create your own Collatz Loop
+          <br /> that behaves how you wish.
+        </Typography>
+      </Box>
 
-        <section className={styles.section}>
-          <div>Create your own Collatz Loop that behaves how you wish.</div>
-          <div className={styles.links}>
-            <Link className={styles.link} href="/more-info">
-              More Info
-            </Link>
-            <Link className={styles.link} href="/create">
-              Start
-            </Link>
-          </div>
-        </section>
+      <Box display="flex" justifyContent="center" mt={4}>
+        <Button
+          component={Link}
+          href="/more-info"
+          size="large"
+          sx={{ fontSize: "1.2rem" }}
+          variant="outlined"
+        >
+          More Info
+        </Button>
+        <Button
+          color="success"
+          component={Link}
+          href="/create"
+          size="large"
+          sx={{ fontSize: "1.2rem", marginLeft: "5rem" }}
+          variant="contained"
+        >
+          Start
+        </Button>
+      </Box>
 
-        <footer className={styles.footer}>
+      <Box component="footer" textAlign="center" mt={16}>
+        <Typography variant="body1">
           By Viktor Zivojinovic
           <br />
           Website Design by Erick Cardenas Mendez
-        </footer>
-      </main>
-    </>
+        </Typography>
+      </Box>
+    </Container>
   );
 }
