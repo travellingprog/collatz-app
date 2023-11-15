@@ -233,7 +233,7 @@ export default function Create() {
               </Button>
             ) : (
               <Button
-                disabled={Number.isNaN(multiplier)}
+                disabled={Number.isNaN(multiplier) || multiplier === 0}
                 onClick={updateMultiplier}
                 size="large"
                 sx={{ height: (th) => th.spacing(7) }}
