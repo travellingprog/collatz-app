@@ -7,7 +7,7 @@ import AppLayout, { StaticProps } from "@/components/AppLayout";
 import theme from "@/lib/theme";
 import createEmotionCache from "@/lib/emotionCache";
 
-export interface MyAppProps extends AppProps<StaticProps> {
+export interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
 
@@ -16,12 +16,13 @@ const clientSideEmotionCache = createEmotionCache();
 
 export default function App(props: MyAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+  const { title, description } = pageProps as StaticProps;
 
   return (
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <AppLayout title={pageProps.title} description={pageProps.description}>
+        <AppLayout title={title} description={description}>
           <Component />
         </AppLayout>
       </ThemeProvider>

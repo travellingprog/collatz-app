@@ -53,7 +53,7 @@ export default function MoreInfo() {
         If you wish to learn more about the Collatz conjecture, I highly
         recommend watching{" "}
         <Link href="https://www.youtube.com/watch?v=094y1Z2wpJg">
-          Veritasium's video on the subject
+          Veritasium&rsquo;s video on the subject
         </Link>
         .
       </Paragraph>
