@@ -61,14 +61,14 @@ describe("Loop", () => {
       numerator: "-13",
     },
     // Fails:
-    /*{
+    {
       multiplier: 97,
       evenSegments: [1, 364, 1, 1],
       denominator:
         "300613450595050653169853516389035139504087366260264943450533244356122755214669880763353471793250393987999147647",
       numerator:
         "7440182902227503665953874530628619702726162314941557350400697797814038191563079548892998426882947251205170935459",
-    },*/
+    },
   ])("Loop($multiplier, $evenSegments)", (t) => {
     const loop = new Loop(t.multiplier, t.evenSegments);
     expect(loop.multiplier.toFixed(0)).toBe(t.multiplier.toFixed(0));

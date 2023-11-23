@@ -1,4 +1,20 @@
-import { bignumber as big, BigNumber, gcd } from "mathjs";
+import {
+  bignumberDependencies,
+  BigNumber,
+  create,
+  gcdDependencies,
+} from "mathjs";
+
+// Creating custom mathjs functions, with higher precision
+const { bignumber: big, gcd } = create(
+  {
+    bignumberDependencies,
+    gcdDependencies,
+  },
+  {
+    precision: 1000000000, // highest possible precision
+  },
+);
 
 /**
  * An assertion for the Typescript type checker to understand that a value should not be null.
