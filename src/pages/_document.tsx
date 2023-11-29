@@ -21,7 +21,11 @@ export default function MyDocument({ emotionStyleTags }: MyDocumentProps) {
   return (
     <Html lang="en" className={roboto.className}>
       <Head>
-        <link rel="icon" href="/favicon.ico" />
+        {/* favicon entries, optimized for different browsers/platforms */}
+        <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
         <meta name="theme-color" content={theme.palette.primary.main} />
         <meta name="emotion-insertion-point" content="" />
         {emotionStyleTags}

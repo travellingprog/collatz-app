@@ -16,7 +16,7 @@ import type { GetStaticProps } from "next";
 import type { ReactNode } from "react";
 
 import Link from "@/components/Link";
-import logo from "../../public/logo.png";
+import logo from "../../public/logo.svg";
 
 export type StaticProps = {
   description: string;
