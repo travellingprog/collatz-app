@@ -331,14 +331,14 @@ export default function Create() {
             <Typography variant="h5" component="div">
               Your Collatz loop algorithm is:
               <br />
-              &bull; if x is odd, calculate{" "}
+              &bull; when x is odd, calculate{" "}
               <EquationHighlight>{equation}</EquationHighlight>
               <br />
-              &bull; if x is even, calculate{" "}
+              &bull; when x is even, calculate{" "}
               <EquationHighlight>x / 2</EquationHighlight>
             </Typography>
             <Typography variant="h5" component="div" mt={2}>
-              and starts at the number x ={" "}
+              and starts at the number{" "}
               <EquationHighlight>{loop.numerator.toFixed(0)}</EquationHighlight>
             </Typography>
             <LoopContainer sx={{ marginTop: 2 }}>
