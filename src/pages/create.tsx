@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, FormEvent, Fragment } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import DeleteIcon from "@mui/icons-material/Delete";
 import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
 import TurnRightIcon from "@mui/icons-material/TurnRight";
 import { styled } from "@mui/material/styles";
@@ -188,12 +188,11 @@ export default function Create() {
                   {evenSegments.length > 1 && (
                     <IconButton
                       aria-label="remove"
-                      color="error"
                       onClick={() => onRemoveSegment(n)}
                       size="large"
                       sx={{ height: (th) => th.spacing(7) }}
                     >
-                      <HighlightOffIcon />
+                      <DeleteIcon />
                     </IconButton>
                   )}
                 </Grid>
