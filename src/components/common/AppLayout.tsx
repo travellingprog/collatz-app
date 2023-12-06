@@ -15,8 +15,8 @@ import { useRouter } from "next/router";
 import type { GetStaticProps } from "next";
 import type { ReactNode } from "react";
 
-import Link from "@/components/Link";
-import logo from "../../public/logo.svg";
+import Link from "@/components/common/Link";
+import logo from "../../../public/logo.svg";
 
 export type StaticProps = {
   description: string;

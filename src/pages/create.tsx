@@ -1,5 +1,4 @@
-import { bignumber as big } from "mathjs";
-import { useMemo, useState, ChangeEvent, FormEvent, Fragment } from "react";
+import { useState, ChangeEvent, FormEvent, Fragment } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
@@ -14,13 +13,10 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
+import MultiplierSelector from "@/components/create/MultiplierSelector";
 import { Loop } from "@/lib/collatzLoop";
-import type { StaticRequired } from "@/components/AppLayout";
-
-type EvenSegment = {
-  id: number;
-  val: number;
-};
+import type { StaticRequired } from "@/components/common/AppLayout";
+import type { EvenSegment } from "@/lib/types";
 
 let idCounter = 1;
 
@@ -68,31 +64,9 @@ export default function Create() {
     init.evenSegments,
   );
   const [loop, setLoop] = useState<Loop | null>(init.loop);
+  const [segmentMin, setSegmentMin] = useState(1);
 
-  const multiplerIsEven = useMemo(() => {
-    if (Number.isNaN(multiplier)) {
-      // multiplier is blank
-      return false;
-    }
-
-    return big(multiplier || 0)
-      .mod(2)
-      .equals(0);
-  }, [multiplier]);
-
-  // if the multiplier is even, calculate the required minimum lenght
-  // of every "even numbers" segment in the loop
-  const segmentMin = useMemo(() => {
-    let min = 1;
-    const bigMultiplier = big(multiplier || 0);
-    if (multiplerIsEven && !bigMultiplier.isZero()) {
-      while (bigMultiplier.mod(big(2).pow(min)).equals(0)) {
-        min++;
-      }
-    }
-
-    return min;
-  }, [multiplier, multiplerIsEven]);
+  console.log("multiplierIsLocked", multiplierIsLocked);
 
   const equation = loop
     ? `${loop.multiplier}x ${
@@ -100,17 +74,18 @@ export default function Create() {
       } ${loop.denominator.abs().toFixed(0)}`
     : "";
 
-  function updateMultiplier() {
-    setMultiplierIsLocked(true);
+  function updateMultiplier(newMultiplier: number, newMin: number) {
+    setMultiplier(newMultiplier);
+    setSegmentMin(newMin);
     setEvenSegments((segments) => {
       // add the first segment if required
       if (segments.length === 0) {
-        return [{ id: idCounter, val: segmentMin }];
+        return [{ id: idCounter, val: newMin }];
       }
 
-      // otherwise update any existing segment with a value below segmentMin
+      // otherwise update any existing segment with a value below newMin
       return segments.map(({ id, val }) => {
-        return { id, val: Math.max(val, segmentMin) };
+        return { id, val: Math.max(val, newMin) };
       });
     });
   }
@@ -181,148 +156,92 @@ export default function Create() {
         </Box>
       </Box>
 
+      {/* Multiplier */}
+      <MultiplierSelector
+        evenSegments={evenSegments}
+        isLocked={multiplierIsLocked}
+        multiplier={multiplier}
+        onLockUpdate={setMultiplierIsLocked}
+        onUpdate={updateMultiplier}
+      />
+
       {/* Input Form */}
-      <Box component="form" onSubmit={onFinishLoop} mt={8}>
-        {/* Multiplier */}
-        <Grid container spacing={1}>
-          <Grid item xs={1} />
-          <Grid item xs={8}>
-            <TextField
-              disabled={multiplierIsLocked}
-              fullWidth
-              helperText={
-                <>
-                  {!multiplierIsLocked && multiplerIsEven && (
-                    <Box color="warning.main">
-                      When the multiplier is even, then each segment in the loop
-                      needs a minimum amount of even numbers. <br />
-                      For your chosen multiplier, every segment will need to
-                      have at least <strong>{segmentMin}</strong> even number
-                      {segmentMin > 1 ? "s" : ""}.
-                    </Box>
+      {evenSegments.length > 0 && (
+        <Box component="form" onSubmit={onFinishLoop}>
+          {/* Even Segments */}
+          <Grid container columnSpacing={1} mt={4} rowSpacing={2}>
+            {evenSegments.map((segment, n) => (
+              <Fragment key={segment.id}>
+                <Grid item xs={1} />
+                <Grid item xs={8}>
+                  <TextField
+                    disabled={!multiplierIsLocked}
+                    fullWidth
+                    id={`even-segment-${segment.id}`}
+                    inputProps={{ min: segmentMin }}
+                    label={`Segment ${n + 1}: Amount of Even Numbers`}
+                    name={`even-segment-${segment.id}`}
+                    onChange={(e) => onSegmentChange(e, n, segment.id)}
+                    type="number"
+                    value={Number.isNaN(segment.val) ? "" : segment.val}
+                  />
+                </Grid>
+                <Grid item xs={2}>
+                  {evenSegments.length > 1 && (
+                    <IconButton
+                      aria-label="remove"
+                      color="error"
+                      onClick={() => onRemoveSegment(n)}
+                      size="large"
+                      sx={{ height: (th) => th.spacing(7) }}
+                    >
+                      <HighlightOffIcon />
+                    </IconButton>
                   )}
-                  {!multiplierIsLocked &&
-                    multiplerIsEven &&
-                    evenSegments.some(({ val }) => val < segmentMin) && (
-                      <Box color="error.main">
-                        Setting this multiplier will automatically increase some
-                        of your segments to a value of {segmentMin}.
-                      </Box>
-                    )}
-                </>
-              }
-              id="multiplier"
-              label={
-                multiplierIsLocked ? "Multiplier" : "Choose Your Multiplier"
-              }
-              name="multiplier"
-              onChange={(e) => setMultiplier(Number.parseInt(e.target.value))}
-              type="number"
-              value={Number.isNaN(multiplier) ? "" : multiplier}
-            />
-          </Grid>
-          <Grid item xs={2} textAlign="right">
-            {multiplierIsLocked ? (
+                </Grid>
+                <Grid item xs={1} />
+              </Fragment>
+            ))}
+
+            <Grid item xs={1} />
+            <Grid item xs={11}>
               <Button
-                onClick={() => setMultiplierIsLocked(false)}
-                size="large"
-                sx={{ height: (th) => th.spacing(7) }}
-                variant="text"
+                disabled={!multiplierIsLocked}
+                onClick={onAddSegment}
+                startIcon={<AddCircleOutlineIcon />}
+                variant="outlined"
               >
-                Update
+                Add Segment
               </Button>
-            ) : (
+            </Grid>
+          </Grid>
+
+          {/* Finish or Reset */}
+          <Grid container mt={6}>
+            <Grid item xs={1} />
+            <Grid item xs={8} textAlign="center">
               <Button
-                disabled={Number.isNaN(multiplier) || multiplier === 0}
-                onClick={updateMultiplier}
+                disabled={
+                  !multiplierIsLocked ||
+                  evenSegments.some(({ val }) => Number.isNaN(val))
+                }
                 size="large"
-                sx={{ height: (th) => th.spacing(7) }}
+                startIcon={<DoneOutlineIcon />}
+                type="submit"
                 variant="contained"
               >
-                Set Multiplier
+                Finish Loop
               </Button>
-            )}
+            </Grid>
+            <Grid item xs={2} textAlign="right">
+              <Button color="error" onClick={onReset} variant="text">
+                Reset
+              </Button>
+            </Grid>
+            <Grid item xs={1} />
           </Grid>
-          <Grid item xs={1} />
-        </Grid>
-
-        {evenSegments.length > 0 && (
-          <>
-            <Grid container columnSpacing={1} mt={4} rowSpacing={2}>
-              {/* Even Segments */}
-              {evenSegments.map((segment, n) => (
-                <Fragment key={segment.id}>
-                  <Grid item xs={1} />
-                  <Grid item xs={8}>
-                    <TextField
-                      disabled={!multiplierIsLocked}
-                      fullWidth
-                      id={`even-segment-${segment.id}`}
-                      inputProps={{ min: segmentMin }}
-                      label={`Segment ${n + 1}: Amount of Even Numbers`}
-                      name={`even-segment-${segment.id}`}
-                      onChange={(e) => onSegmentChange(e, n, segment.id)}
-                      type="number"
-                      value={Number.isNaN(segment.val) ? "" : segment.val}
-                    />
-                  </Grid>
-                  <Grid item xs={2}>
-                    {evenSegments.length > 1 && (
-                      <IconButton
-                        aria-label="remove"
-                        color="error"
-                        onClick={() => onRemoveSegment(n)}
-                        size="large"
-                        sx={{ height: (th) => th.spacing(7) }}
-                      >
-                        <HighlightOffIcon />
-                      </IconButton>
-                    )}
-                  </Grid>
-                  <Grid item xs={1} />
-                </Fragment>
-              ))}
-
-              <Grid item xs={1} />
-              <Grid item xs={11}>
-                <Button
-                  disabled={!multiplierIsLocked}
-                  onClick={onAddSegment}
-                  startIcon={<AddCircleOutlineIcon />}
-                  variant="outlined"
-                >
-                  Add Segment
-                </Button>
-              </Grid>
-            </Grid>
-
-            {/* Finish or Reset */}
-            <Grid container mt={6}>
-              <Grid item xs={1} />
-              <Grid item xs={8} textAlign="center">
-                <Button
-                  disabled={
-                    !multiplierIsLocked ||
-                    evenSegments.some(({ val }) => Number.isNaN(val))
-                  }
-                  size="large"
-                  startIcon={<DoneOutlineIcon />}
-                  type="submit"
-                  variant="contained"
-                >
-                  Finish Loop
-                </Button>
-              </Grid>
-              <Grid item xs={2} textAlign="right">
-                <Button color="error" onClick={onReset} variant="text">
-                  Reset
-                </Button>
-              </Grid>
-              <Grid item xs={1} />
-            </Grid>
-          </>
-        )}
-      </Box>
+        </Box>
+      )}
 
       {/* Result */}
       {loop && (
