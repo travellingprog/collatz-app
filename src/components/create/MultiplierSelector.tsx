@@ -3,6 +3,8 @@ import { useEffect, useMemo, useRef, useState, FormEvent } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import TextField from "@mui/material/TextField";
 
 import type { EvenSegment } from "@/lib/types";
@@ -62,9 +64,13 @@ export default function MultiplierSelector(props: Props) {
     onLockUpdate(false);
   }
 
+  function cancelEdit() {
+    setValue(multiplier);
+    onLockUpdate(true);
+  }
+
   function updateMultiplier(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log("form submitted");
     onUpdate(value, segmentMin);
     onLockUpdate(true);
   }
@@ -81,16 +87,15 @@ export default function MultiplierSelector(props: Props) {
       <Grid item xs={1} />
       <Grid item xs={8}>
         <TextField
+          autoFocus
           disabled={isLocked}
           fullWidth
           helperText={
             <>
               {!isLocked && isEven && (
                 <Box color="warning.main">
-                  When the multiplier is even, then each segment in the loop
-                  needs a minimum amount of even numbers. <br />
-                  For your chosen multiplier, every segment will need to have at
-                  least <strong>{segmentMin}</strong> even number
+                  With this multiplier, every segment will need to have at least{" "}
+                  <strong>{segmentMin}</strong> even number
                   {segmentMin > 1 ? "s" : ""}.
                 </Box>
               )}
@@ -98,8 +103,7 @@ export default function MultiplierSelector(props: Props) {
                 isEven &&
                 evenSegments.some(({ val }) => val < segmentMin) && (
                   <Box color="error.main">
-                    Setting this multiplier will automatically increase some of
-                    your segments to a value of {segmentMin}.
+                    This will update your current segments.
                   </Box>
                 )}
             </>
@@ -113,17 +117,8 @@ export default function MultiplierSelector(props: Props) {
           value={Number.isNaN(value) ? "" : value}
         />
       </Grid>
-      <Grid item xs={2} textAlign="right">
-        {isLocked ? (
-          <Button
-            size="large"
-            sx={{ height: (th) => th.spacing(7) }}
-            type="submit"
-            variant="text"
-          >
-            Update
-          </Button>
-        ) : (
+      {evenSegments.length === 0 && (
+        <Grid item xs={2} textAlign="right">
           <Button
             disabled={Number.isNaN(value) || value === 0}
             size="large"
@@ -133,8 +128,43 @@ export default function MultiplierSelector(props: Props) {
           >
             Set Multiplier
           </Button>
-        )}
-      </Grid>
+        </Grid>
+      )}
+      {evenSegments.length > 0 && (
+        <Grid item xs={2} textAlign="left">
+          {isLocked && (
+            <IconButton
+              aria-label="edit multiplier"
+              size="large"
+              sx={{ height: (th) => th.spacing(7) }}
+              type="submit"
+            >
+              <ModeEditIcon />
+            </IconButton>
+          )}
+          {!isLocked && (
+            <>
+              <Button
+                size="large"
+                sx={{ height: (th) => th.spacing(7) }}
+                type="submit"
+                variant="contained"
+              >
+                Update
+              </Button>
+              <Button
+                color="error"
+                onClick={cancelEdit}
+                size="large"
+                sx={{ height: (th) => th.spacing(7) }}
+                variant="text"
+              >
+                Cancel
+              </Button>
+            </>
+          )}
+        </Grid>
+      )}
       <Grid item xs={1} />
     </Grid>
   );

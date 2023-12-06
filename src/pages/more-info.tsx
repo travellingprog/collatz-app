@@ -2,7 +2,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
-import Link from "@/components/Link";
+import Link from "@/components/common/Link";
 import type { StaticRequired } from "@/components/common/AppLayout";
 
 export const getStaticProps = (async () => {

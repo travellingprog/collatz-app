@@ -66,8 +66,6 @@ export default function Create() {
   const [loop, setLoop] = useState<Loop | null>(init.loop);
   const [segmentMin, setSegmentMin] = useState(1);
 
-  console.log("multiplierIsLocked", multiplierIsLocked);
-
   const equation = loop
     ? `${loop.multiplier}x ${
         loop.denominator.isNeg() ? "-" : "+"
