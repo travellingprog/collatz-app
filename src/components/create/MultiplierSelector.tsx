@@ -81,15 +81,13 @@ export default function MultiplierSelector(props: Props) {
       component="form"
       container
       onSubmit={isLocked ? unlockMultiplier : updateMultiplier}
-      mt={8}
       spacing={1}
     >
-      <Grid item xs={1} />
       <Grid item xs={8}>
         <TextField
           autoFocus
           disabled={isLocked}
-          fullWidth
+          fullWidth={true}
           helperText={
             <>
               {!isLocked && isEven && (
@@ -118,7 +116,7 @@ export default function MultiplierSelector(props: Props) {
         />
       </Grid>
       {evenSegments.length === 0 && (
-        <Grid item xs={2} textAlign="right">
+        <Grid item xs={4} textAlign="left">
           <Button
             disabled={Number.isNaN(value) || value === 0}
             size="large"
@@ -126,12 +124,12 @@ export default function MultiplierSelector(props: Props) {
             type="submit"
             variant="contained"
           >
-            Set Multiplier
+            Next
           </Button>
         </Grid>
       )}
       {evenSegments.length > 0 && (
-        <Grid item xs={2} textAlign="left">
+        <Grid item xs={4} textAlign="left">
           {isLocked && (
             <IconButton
               aria-label="edit multiplier"
@@ -145,7 +143,6 @@ export default function MultiplierSelector(props: Props) {
           {!isLocked && (
             <>
               <Button
-                size="large"
                 sx={{ height: (th) => th.spacing(7) }}
                 type="submit"
                 variant="contained"
@@ -155,7 +152,6 @@ export default function MultiplierSelector(props: Props) {
               <Button
                 color="error"
                 onClick={cancelEdit}
-                size="large"
                 sx={{ height: (th) => th.spacing(7) }}
                 variant="text"
               >
@@ -165,7 +161,6 @@ export default function MultiplierSelector(props: Props) {
           )}
         </Grid>
       )}
-      <Grid item xs={1} />
     </Grid>
   );
 }

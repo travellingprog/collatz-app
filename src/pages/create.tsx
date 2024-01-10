@@ -43,6 +43,11 @@ const LoopContainer = styled("div")(({ theme }) => ({
   padding: theme.spacing(2),
 }));
 
+const ResultsText = styled("div")(({ theme }) => ({
+  ...theme.typography.h6,
+  wordBreak: "break-word",
+}));
+
 export const getStaticProps = (async () => {
   return {
     props: {
@@ -154,126 +159,135 @@ export default function Create() {
         </Box>
       </Box>
 
-      {/* Multiplier */}
-      <MultiplierSelector
-        evenSegments={evenSegments}
-        isLocked={multiplierIsLocked}
-        multiplier={multiplier}
-        onLockUpdate={setMultiplierIsLocked}
-        onUpdate={updateMultiplier}
-      />
+      <Grid container mt={2} spacing={2}>
+        <Grid item mt={4} xs={6}>
+          {/* Multiplier */}
+          <MultiplierSelector
+            evenSegments={evenSegments}
+            isLocked={multiplierIsLocked}
+            multiplier={multiplier}
+            onLockUpdate={setMultiplierIsLocked}
+            onUpdate={updateMultiplier}
+          />
 
-      {/* Input Form */}
-      {evenSegments.length > 0 && (
-        <Box component="form" onSubmit={onFinishLoop}>
-          {/* Even Segments */}
-          <Grid container columnSpacing={1} mt={4} rowSpacing={2}>
-            {evenSegments.map((segment, n) => (
-              <Fragment key={segment.id}>
-                <Grid item xs={1} />
-                <Grid item xs={8}>
-                  <TextField
+          {/* Input Form */}
+          {evenSegments.length > 0 && (
+            <Box component="form" onSubmit={onFinishLoop}>
+              {/* Even Segments */}
+              <Grid container columnSpacing={1} mt={2} rowSpacing={2}>
+                {evenSegments.map((segment, n) => (
+                  <Fragment key={segment.id}>
+                    <Grid item xs={8}>
+                      <TextField
+                        disabled={!multiplierIsLocked}
+                        fullWidth
+                        id={`even-segment-${segment.id}`}
+                        inputProps={{ min: segmentMin }}
+                        label={`Segment ${n + 1}: Amount of Even Numbers`}
+                        name={`even-segment-${segment.id}`}
+                        onChange={(e) => onSegmentChange(e, n, segment.id)}
+                        type="number"
+                        value={Number.isNaN(segment.val) ? "" : segment.val}
+                      />
+                    </Grid>
+                    <Grid item xs={4}>
+                      {evenSegments.length > 1 && (
+                        <IconButton
+                          aria-label="remove"
+                          onClick={() => onRemoveSegment(n)}
+                          size="large"
+                          sx={{ height: (th) => th.spacing(7) }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      )}
+                    </Grid>
+                  </Fragment>
+                ))}
+
+                <Grid item xs={12}>
+                  <Button
                     disabled={!multiplierIsLocked}
-                    fullWidth
-                    id={`even-segment-${segment.id}`}
-                    inputProps={{ min: segmentMin }}
-                    label={`Segment ${n + 1}: Amount of Even Numbers`}
-                    name={`even-segment-${segment.id}`}
-                    onChange={(e) => onSegmentChange(e, n, segment.id)}
-                    type="number"
-                    value={Number.isNaN(segment.val) ? "" : segment.val}
-                  />
+                    onClick={onAddSegment}
+                    startIcon={<AddCircleOutlineIcon />}
+                    variant="outlined"
+                  >
+                    Add Segment
+                  </Button>
                 </Grid>
-                <Grid item xs={2}>
-                  {evenSegments.length > 1 && (
-                    <IconButton
-                      aria-label="remove"
-                      onClick={() => onRemoveSegment(n)}
-                      size="large"
-                      sx={{ height: (th) => th.spacing(7) }}
+              </Grid>
+
+              {/* Finish or Reset */}
+              <Grid container mt={6}>
+                <Grid item xs={8} textAlign="center">
+                  <Button
+                    disabled={
+                      !multiplierIsLocked ||
+                      evenSegments.some(({ val }) => Number.isNaN(val))
+                    }
+                    size="large"
+                    startIcon={<DoneOutlineIcon />}
+                    type="submit"
+                    variant="contained"
+                  >
+                    Finish Loop
+                  </Button>
+                </Grid>
+                <Grid item xs={4} textAlign="left">
+                  <Button color="error" onClick={onReset} variant="text">
+                    Reset
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          )}
+        </Grid>
+        <Grid item xs={6}>
+          {/* Result */}
+          <Paper component="section" elevation={1} sx={{ minHeight: "25rem" }}>
+            {!loop && (
+              <Box padding={4}>
+                <ResultsText sx={{ fontStyle: "italic", fontWeight: 400 }}>
+                  Your loop and its algorithm will appear here.
+                </ResultsText>
+              </Box>
+            )}
+            {loop && (
+              <Box padding={4}>
+                <ResultsText>
+                  Your Collatz loop algorithm is:
+                  <br />
+                  &bull; when x is odd, calculate{" "}
+                  <EquationHighlight>{equation}</EquationHighlight>
+                  <br />
+                  &bull; when x is even, calculate{" "}
+                  <EquationHighlight>x / 2</EquationHighlight>
+                </ResultsText>
+                <ResultsText sx={{ marginTop: "1.5rem" }}>
+                  and starts at the number{" "}
+                  <EquationHighlight>
+                    {loop.numerator.toFixed(0)}
+                  </EquationHighlight>
+                </ResultsText>
+                <LoopContainer sx={{ marginTop: 2 }}>
+                  {loop.sequence.map((loopElem, idx) => (
+                    <Box
+                      color={
+                        loopElem.mod(2).equals(0)
+                          ? "secondary.main"
+                          : "primary.dark"
+                      }
+                      key={idx}
                     >
-                      <DeleteIcon />
-                    </IconButton>
-                  )}
-                </Grid>
-                <Grid item xs={1} />
-              </Fragment>
-            ))}
-
-            <Grid item xs={1} />
-            <Grid item xs={11}>
-              <Button
-                disabled={!multiplierIsLocked}
-                onClick={onAddSegment}
-                startIcon={<AddCircleOutlineIcon />}
-                variant="outlined"
-              >
-                Add Segment
-              </Button>
-            </Grid>
-          </Grid>
-
-          {/* Finish or Reset */}
-          <Grid container mt={6}>
-            <Grid item xs={1} />
-            <Grid item xs={8} textAlign="center">
-              <Button
-                disabled={
-                  !multiplierIsLocked ||
-                  evenSegments.some(({ val }) => Number.isNaN(val))
-                }
-                size="large"
-                startIcon={<DoneOutlineIcon />}
-                type="submit"
-                variant="contained"
-              >
-                Finish Loop
-              </Button>
-            </Grid>
-            <Grid item xs={2} textAlign="right">
-              <Button color="error" onClick={onReset} variant="text">
-                Reset
-              </Button>
-            </Grid>
-            <Grid item xs={1} />
-          </Grid>
-        </Box>
-      )}
-
-      {/* Result */}
-      {loop && (
-        <Paper component="section" elevation={3}>
-          <Box padding={4} mt={4}>
-            <Typography variant="h5" component="div">
-              Your Collatz loop algorithm is:
-              <br />
-              &bull; when x is odd, calculate{" "}
-              <EquationHighlight>{equation}</EquationHighlight>
-              <br />
-              &bull; when x is even, calculate{" "}
-              <EquationHighlight>x / 2</EquationHighlight>
-            </Typography>
-            <Typography variant="h5" component="div" mt={2}>
-              and starts at the number{" "}
-              <EquationHighlight>{loop.numerator.toFixed(0)}</EquationHighlight>
-            </Typography>
-            <LoopContainer sx={{ marginTop: 2 }}>
-              {loop.sequence.map((loopElem, idx) => (
-                <Box
-                  color={
-                    loopElem.mod(2).equals(0)
-                      ? "secondary.main"
-                      : "primary.dark"
-                  }
-                  key={idx}
-                >
-                  {loopElem.toFixed(0)}
-                </Box>
-              ))}
-            </LoopContainer>
-          </Box>
-        </Paper>
-      )}
+                      {loopElem.toFixed(0)}
+                    </Box>
+                  ))}
+                </LoopContainer>
+              </Box>
+            )}
+          </Paper>
+        </Grid>
+      </Grid>
     </Container>
   );
 }
