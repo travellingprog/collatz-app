@@ -70,6 +70,7 @@ export default function Create() {
   );
   const [loop, setLoop] = useState<Loop | null>(init.loop);
   const [segmentMin, setSegmentMin] = useState(1);
+  const segmentMax = 10000;
 
   const equation = loop
     ? `${loop.multiplier}x ${
@@ -175,6 +176,13 @@ export default function Create() {
             <Box component="form" onSubmit={onFinishLoop}>
               {/* Even Segments */}
               <Grid container columnSpacing={1} mt={2} rowSpacing={2}>
+                <Grid item xs={12}>
+                  Define the lengths of your &quot;Even Number&quot; segments
+                  <Typography variant="caption" component="div" mb={1}>
+                    min length: {segmentMin}, max length: {segmentMax}
+                  </Typography>
+                </Grid>
+
                 {evenSegments.map((segment, n) => (
                   <Fragment key={segment.id}>
                     <Grid item xs={8}>
@@ -182,8 +190,8 @@ export default function Create() {
                         disabled={!multiplierIsLocked}
                         fullWidth
                         id={`even-segment-${segment.id}`}
-                        inputProps={{ min: segmentMin }}
-                        label={`Segment ${n + 1}: Amount of Even Numbers`}
+                        inputProps={{ min: segmentMin, max: segmentMax }}
+                        label={`Segment ${n + 1}`}
                         name={`even-segment-${segment.id}`}
                         onChange={(e) => onSegmentChange(e, n, segment.id)}
                         type="number"
@@ -223,7 +231,12 @@ export default function Create() {
                   <Button
                     disabled={
                       !multiplierIsLocked ||
-                      evenSegments.some(({ val }) => Number.isNaN(val))
+                      evenSegments.some(
+                        ({ val }) =>
+                          Number.isNaN(val) ||
+                          val < segmentMin ||
+                          val > segmentMax,
+                      )
                     }
                     size="large"
                     startIcon={<DoneOutlineIcon />}
