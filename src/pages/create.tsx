@@ -3,7 +3,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
 import TurnRightIcon from "@mui/icons-material/TurnRight";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -37,7 +37,7 @@ const LoopContainer = styled("div")(({ theme }) => ({
   borderStyle: "solid",
   borderColor: theme.palette.primary.light,
   fontFamily: "monospace",
-  fontSize: "1.2rem",
+  fontSize: "1rem",
   maxHeight: "30rem",
   overflow: "auto",
   padding: theme.spacing(2),
@@ -61,6 +61,7 @@ export const getStaticProps = (async () => {
  * The page where the user can create their own loop.
  */
 export default function Create() {
+  const theme = useTheme();
   const [multiplier, setMultiplier] = useState(init.multiplier);
   const [multiplierIsLocked, setMultiplierIsLocked] = useState(
     init.multiplierIsLocked,
@@ -161,7 +162,7 @@ export default function Create() {
       </Box>
 
       <Grid container mt={2} spacing={2}>
-        <Grid item mt={4} xs={6}>
+        <Grid item mt={3} xs={6}>
           {/* Multiplier */}
           <MultiplierSelector
             evenSegments={evenSegments}
@@ -177,7 +178,11 @@ export default function Create() {
               {/* Even Segments */}
               <Grid container columnSpacing={1} mt={2} rowSpacing={2}>
                 <Grid item xs={12}>
-                  Define the lengths of your &quot;Even Number&quot; segments
+                  Define the lengths of your{" "}
+                  <Box color={theme.loopNumber.even} component="span">
+                    Even Number
+                  </Box>{" "}
+                  segments
                   <Typography variant="caption" component="div" mb={1}>
                     min length: {segmentMin}, max length: {segmentMax}
                   </Typography>
@@ -270,25 +275,32 @@ export default function Create() {
                 <ResultsText>
                   Your Collatz loop algorithm is:
                   <br />
-                  &bull; when x is odd, calculate{" "}
-                  <EquationHighlight>{equation}</EquationHighlight>
+                  &bull; for{" "}
+                  <Box color={theme.loopNumber.odd} component="span">
+                    odd numbers
+                  </Box>
+                  , calculate <EquationHighlight>{equation}</EquationHighlight>
                   <br />
-                  &bull; when x is even, calculate{" "}
-                  <EquationHighlight>x / 2</EquationHighlight>
+                  &bull; for{" "}
+                  <Box color={theme.loopNumber.even} component="span">
+                    even numbers
+                  </Box>
+                  , calculate <EquationHighlight>x / 2</EquationHighlight>
                 </ResultsText>
                 <ResultsText sx={{ marginTop: "1.5rem" }}>
                   and starts at the number{" "}
                   <EquationHighlight>
                     {loop.numerator.toFixed(0)}
                   </EquationHighlight>
+                  .
                 </ResultsText>
                 <LoopContainer sx={{ marginTop: 2 }}>
                   {loop.sequence.map((loopElem, idx) => (
                     <Box
                       color={
                         loopElem.mod(2).equals(0)
-                          ? "secondary.main"
-                          : "primary.dark"
+                          ? theme.loopNumber.even
+                          : theme.loopNumber.odd
                       }
                       key={idx}
                     >

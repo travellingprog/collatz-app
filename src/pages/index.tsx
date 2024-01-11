@@ -78,7 +78,7 @@ export default function Home() {
         <Typography variant="body1">
           By Viktor Zivojinovic
           <br />
-          Website Design by Erick Cardenas Mendez
+          Website created by Erick Cardenas Mendez
         </Typography>
       </Box>
     </Container>
