@@ -1,20 +1,22 @@
-import { bignumber as big } from "mathjs";
 import { useEffect, useMemo, useRef, useState, FormEvent } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import TextField from "@mui/material/TextField";
+
+import BigNumberInput from "@/components/common/BigNumberInput";
+import { BigNumber, isEven as isEvenFn, isNumber } from "@/lib/math";
+import { Loop } from "@/lib/collatzLoop";
 
 import type { EvenSegment } from "@/lib/types";
 
 type Props = {
   evenSegments: EvenSegment[];
   isLocked: boolean;
-  multiplier: number;
+  multiplier: BigNumber;
   onLockUpdate: (isLocked: boolean) => void;
-  onUpdate: (multiplier: number, segmentMin: number) => void;
+  onUpdate: (multiplier: BigNumber, segmentMin: BigNumber) => void;
 };
 
 /**
@@ -24,8 +26,8 @@ type Props = {
 export default function MultiplierSelector(props: Props) {
   const { evenSegments, isLocked, multiplier, onLockUpdate, onUpdate } = props;
 
-  const [value, setValue] = useState(multiplier);
-  useEffect(() => setValue(multiplier), [multiplier]);
+  const [draftValue, setDraftValue] = useState(multiplier);
+  useEffect(() => setDraftValue(multiplier), [multiplier]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -35,29 +37,16 @@ export default function MultiplierSelector(props: Props) {
   }, [isLocked]);
 
   const isEven = useMemo(() => {
-    if (Number.isNaN(value)) {
-      // value is blank
-      return false;
-    }
+    return isNumber(draftValue) ? isEvenFn(draftValue) : false;
+  }, [draftValue]);
 
-    return big(value || 0)
-      .mod(2)
-      .equals(0);
-  }, [value]);
-
-  // if the value is even, calculate the required minimum length
+  // calculate the required minimum length
   // of every "even numbers" segment in the loop
   const segmentMin = useMemo(() => {
-    let min = 1;
-    const bigValue = big(value || 0);
-    if (isEven && !bigValue.isZero()) {
-      while (bigValue.mod(big(2).pow(min)).equals(0)) {
-        min++;
-      }
-    }
+    return Loop.calcSegmentMin(draftValue);
+  }, [draftValue]);
 
-    return min;
-  }, [value, isEven]);
+  const isSubmitDisabled = !isNumber(draftValue) || draftValue.isZero();
 
   function unlockMultiplier(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -65,13 +54,13 @@ export default function MultiplierSelector(props: Props) {
   }
 
   function cancelEdit() {
-    setValue(multiplier);
+    setDraftValue(multiplier);
     onLockUpdate(true);
   }
 
   function updateMultiplier(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onUpdate(value, segmentMin);
+    onUpdate(draftValue, segmentMin);
     onLockUpdate(true);
   }
 
@@ -84,7 +73,7 @@ export default function MultiplierSelector(props: Props) {
       spacing={1}
     >
       <Grid item xs={8}>
-        <TextField
+        <BigNumberInput
           autoFocus
           disabled={isLocked}
           fullWidth={true}
@@ -93,13 +82,13 @@ export default function MultiplierSelector(props: Props) {
               {!isLocked && isEven && (
                 <Box color="warning.main" component="span">
                   With this multiplier, every segment will need to have at least{" "}
-                  <strong>{segmentMin}</strong> even number
-                  {segmentMin > 1 ? "s" : ""}.<br />
+                  <strong>{segmentMin.toFixed(0)}</strong> even number
+                  {segmentMin.gt(1) ? "s" : ""}.<br />
                 </Box>
               )}
               {!isLocked &&
                 isEven &&
-                evenSegments.some(({ val }) => val < segmentMin) && (
+                evenSegments.some(({ val }) => val.lt(segmentMin)) && (
                   <Box color="error.main" component="span">
                     This will update your current segments.
                   </Box>
@@ -110,15 +99,14 @@ export default function MultiplierSelector(props: Props) {
           inputRef={inputRef}
           label={isLocked ? "Multiplier" : "Choose Your Multiplier"}
           name="multiplier"
-          onChange={(e) => setValue(Number.parseInt(e.target.value))}
-          type="number"
-          value={Number.isNaN(value) ? "" : value}
+          onChange={setDraftValue}
+          value={draftValue}
         />
       </Grid>
       {evenSegments.length === 0 && (
         <Grid item xs={4} textAlign="left">
           <Button
-            disabled={Number.isNaN(value) || value === 0}
+            disabled={isSubmitDisabled}
             size="large"
             sx={{ height: (th) => th.spacing(7) }}
             type="submit"
@@ -143,6 +131,7 @@ export default function MultiplierSelector(props: Props) {
           {!isLocked && (
             <>
               <Button
+                disabled={isSubmitDisabled}
                 sx={{ height: (th) => th.spacing(7) }}
                 type="submit"
                 variant="contained"

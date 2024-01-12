@@ -1,20 +1,4 @@
-import {
-  bignumberDependencies,
-  BigNumber,
-  create,
-  gcdDependencies,
-} from "mathjs";
-
-// Creating custom mathjs functions, with higher precision
-const { bignumber: big, gcd } = create(
-  {
-    bignumberDependencies,
-    gcdDependencies,
-  },
-  {
-    precision: 1000000000, // highest possible precision
-  },
-);
+import { big, BigNumber, gcd, isEven } from "@/lib/math";
 
 /**
  * An assertion for the Typescript type checker to understand that a value should not be null.
@@ -50,26 +34,16 @@ export class Loop {
 
   /** An async Loop creator. The calculations required may take time */
   static async create(
-    multiplerNum: number,
-    evenSegmentsNum: number[],
+    multiplier: BigNumber,
+    evenSegments: BigNumber[],
   ): Promise<Loop> {
-    const multiplier = big(multiplerNum);
-    const evenSegments = evenSegmentsNum.map((num) => big(num));
-
     // if multiplier is even, check that all even segments are the required minimum length
-    if (multiplier.mod(2).equals(0)) {
-      let minimum = 1;
-
-      while (multiplier.mod(big(2).pow(minimum)).equals(0)) {
-        minimum++;
-      }
-
-      if (evenSegments.some((segment) => segment.lessThan(minimum))) {
-        throw Error(
-          `The multiplier value, ${multiplier}, is even ` +
-            `and requires all segments to have at least ${minimum} even numbers`,
-        );
-      }
+    const segmentMin = Loop.calcSegmentMin(multiplier);
+    if (evenSegments.some((segment) => segment.lessThan(segmentMin))) {
+      throw Error(
+        `The multiplier value, ${multiplier}, is even ` +
+          `and requires all segments to have at least ${segmentMin} even numbers`,
+      );
     }
 
     let decreaseCounter = big(0);
@@ -95,7 +69,11 @@ export class Loop {
       .minus(multiplier.pow(exponent));
 
     const divisor = gcd(numerator, denominator.abs());
-    // ^ abs() use required because of issue https://github.com/josdejong/mathjs/issues/3087
+    /*
+       ^ abs() use required because of issue https://github.com/josdejong/mathjs/issues/3087
+       Also, upgrading to mathjs v12 causes tests to fail with
+       "Fatal JavaScript invalid size error 169220804 (see crbug.com/1201626)".
+    */
 
     numerator = numerator.div(divisor);
     denominator = denominator.div(divisor);
@@ -103,16 +81,33 @@ export class Loop {
     let loopNumber = numerator;
     const sequence = [loopNumber];
 
-    for (const segmentNum of evenSegmentsNum) {
+    for (const segment of evenSegments) {
       loopNumber = loopNumber.mul(multiplier).plus(denominator);
       sequence.push(loopNumber);
 
-      for (let y = 0; y < segmentNum; y++) {
+      for (let y = big(0); y.lt(segment); y = y.plus(1)) {
         loopNumber = loopNumber.div(2).floor();
         sequence.push(loopNumber);
       }
     }
 
     return new Loop(multiplier, denominator, numerator, sequence);
+  }
+
+  /**
+   * Calculate the minimum length that the Even Number segments need to be,
+   * for a given multiplier.
+   */
+  static calcSegmentMin(multiplier: BigNumber): BigNumber {
+    let segmentMin = big(1);
+    if (isEven(multiplier) && !multiplier.isZero()) {
+      const two = big(2);
+
+      while (multiplier.mod(two.pow(segmentMin)).equals(0)) {
+        segmentMin = segmentMin.plus(1);
+      }
+    }
+
+    return segmentMin;
   }
 }

@@ -3,6 +3,7 @@
  */
 import { describe, expect, test } from "@jest/globals";
 import { Loop } from "@/lib/collatzLoop";
+import { big } from "@/lib/math";
 
 describe("Loop", () => {
   test.each([
@@ -60,7 +61,6 @@ describe("Loop", () => {
       denominator: "-1",
       numerator: "-13",
     },
-    // Fails:
     {
       multiplier: 97,
       evenSegments: [1, 364, 1, 1],
@@ -70,9 +70,11 @@ describe("Loop", () => {
         "7440182902227503665953874530628619702726162314941557350400697797814038191563079548892998426882947251205170935459",
     },
   ])("Loop.create($multiplier, $evenSegments)", async (t) => {
-    const loop = await Loop.create(t.multiplier, t.evenSegments);
-    expect(loop.multiplier.toFixed(0)).toBe(t.multiplier.toFixed(0));
-    expect(loop.denominator.toFixed(0)).toBe(t.denominator);
-    expect(loop.numerator.toFixed(0)).toBe(t.numerator);
+    const multiplier = big(t.multiplier);
+    const evenSegments = t.evenSegments.map((n) => big(n));
+    const loop = await Loop.create(multiplier, evenSegments);
+    expect(loop.multiplier.toFixed()).toBe(t.multiplier.toFixed(0));
+    expect(loop.denominator.toFixed()).toBe(t.denominator);
+    expect(loop.numerator.toFixed()).toBe(t.numerator);
   });
 });

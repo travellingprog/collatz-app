@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, FormEvent, Fragment } from "react";
+import { useState, FormEvent, Fragment } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
@@ -9,24 +9,28 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
+import BigNumberInput from "@/components/common/BigNumberInput";
 import MultiplierSelector from "@/components/create/MultiplierSelector";
 import Result from "@/components/create/Result";
 import { Loop } from "@/lib/collatzLoop";
+import { BigNumber, big, isNumber, max } from "@/lib/math";
+
 import type { StaticRequired } from "@/components/common/AppLayout";
 import type { EvenSegment } from "@/lib/types";
 
 let idCounter = 1;
+const initMultiplier = big(3);
 
 const init = {
   isPending: false,
   error: null,
-  multiplier: 3,
+  multiplier: initMultiplier,
   multiplierIsLocked: false,
   evenSegments: [] as EvenSegment[],
   loop: null,
+  segmentMin: Loop.calcSegmentMin(initMultiplier),
 };
 
 export const getStaticProps = (async () => {
@@ -53,10 +57,10 @@ export default function Create() {
     init.evenSegments,
   );
   const [loop, setLoop] = useState<Loop | null>(init.loop);
-  const [segmentMin, setSegmentMin] = useState(1);
-  const segmentMax = 10000;
+  const [segmentMin, setSegmentMin] = useState(init.segmentMin);
+  const segmentMax = big(10000);
 
-  function updateMultiplier(newMultiplier: number, newMin: number) {
+  function updateMultiplier(newMultiplier: BigNumber, newMin: BigNumber) {
     setMultiplier(newMultiplier);
     setSegmentMin(newMin);
     setEvenSegments((segments) => {
@@ -67,7 +71,7 @@ export default function Create() {
 
       // otherwise update any existing segment with a value below newMin
       return segments.map(({ id, val }) => {
-        return { id, val: Math.max(val, newMin) };
+        return { id, val: max(val, newMin) };
       });
     });
   }
@@ -76,12 +80,8 @@ export default function Create() {
     setEvenSegments((arr) => arr.concat({ id: ++idCounter, val: segmentMin }));
   }
 
-  function onSegmentChange(
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    n: number,
-    id: number,
-  ) {
-    const newSegment = { id, val: Number.parseInt(e.target.value) };
+  function onSegmentChange(val: BigNumber, n: number, id: number) {
+    const newSegment = { id, val };
     setEvenSegments((arr) => {
       return [...arr.slice(0, n), newSegment, ...arr.slice(n + 1)];
     });
@@ -123,6 +123,7 @@ export default function Create() {
     setLoop(init.loop);
     setIsPending(init.isPending);
     setError(init.error);
+    setSegmentMin(init.segmentMin);
   }
 
   return (
@@ -180,23 +181,24 @@ export default function Create() {
                   </Box>{" "}
                   segments
                   <Typography variant="caption" component="div" mb={1}>
-                    min length: {segmentMin}, max length: {segmentMax}
+                    min length: {segmentMin.toFixed(0)}, max length:{" "}
+                    {segmentMax.toFixed(0)}
                   </Typography>
                 </Grid>
 
                 {evenSegments.map((segment, n) => (
                   <Fragment key={segment.id}>
                     <Grid item xs={8}>
-                      <TextField
+                      <BigNumberInput
                         disabled={!multiplierIsLocked}
                         fullWidth
                         id={`even-segment-${segment.id}`}
-                        inputProps={{ min: segmentMin, max: segmentMax }}
                         label={`Segment ${n + 1}`}
+                        max={segmentMax}
+                        min={segmentMin}
                         name={`even-segment-${segment.id}`}
-                        onChange={(e) => onSegmentChange(e, n, segment.id)}
-                        type="number"
-                        value={Number.isNaN(segment.val) ? "" : segment.val}
+                        onChange={(val) => onSegmentChange(val, n, segment.id)}
+                        value={segment.val}
                       />
                     </Grid>
                     <Grid item xs={4}>
@@ -234,9 +236,9 @@ export default function Create() {
                       !multiplierIsLocked ||
                       evenSegments.some(
                         ({ val }) =>
-                          Number.isNaN(val) ||
-                          val < segmentMin ||
-                          val > segmentMax,
+                          !isNumber(val) ||
+                          val.lt(segmentMin) ||
+                          val.gt(segmentMax),
                       )
                     }
                     size="large"
