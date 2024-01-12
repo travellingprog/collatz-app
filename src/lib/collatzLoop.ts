@@ -35,7 +35,24 @@ export class Loop {
   numerator: BigNumber;
   sequence: BigNumber[];
 
-  constructor(multiplerNum: number, evenSegmentsNum: number[]) {
+  /** Loop constructor, only to be used directly by test functions */
+  constructor(
+    multiplier: BigNumber,
+    denominator: BigNumber,
+    numerator: BigNumber,
+    sequence: BigNumber[],
+  ) {
+    this.multiplier = multiplier;
+    this.denominator = denominator;
+    this.numerator = numerator;
+    this.sequence = sequence;
+  }
+
+  /** An async Loop creator. The calculations required may take time */
+  static async create(
+    multiplerNum: number,
+    evenSegmentsNum: number[],
+  ): Promise<Loop> {
     const multiplier = big(multiplerNum);
     const evenSegments = evenSegmentsNum.map((num) => big(num));
 
@@ -49,8 +66,8 @@ export class Loop {
 
       if (evenSegments.some((segment) => segment.lessThan(minimum))) {
         throw Error(
-          `The multiplier value, ${multiplier}, is even` +
-            `and  requires all segments to have at least ${minimum} even numbers`,
+          `The multiplier value, ${multiplier}, is even ` +
+            `and requires all segments to have at least ${minimum} even numbers`,
         );
       }
     }
@@ -96,9 +113,6 @@ export class Loop {
       }
     }
 
-    this.multiplier = multiplier;
-    this.denominator = denominator;
-    this.numerator = numerator;
-    this.sequence = sequence;
+    return new Loop(multiplier, denominator, numerator, sequence);
   }
 }

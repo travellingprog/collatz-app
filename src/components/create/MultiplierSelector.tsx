@@ -91,16 +91,16 @@ export default function MultiplierSelector(props: Props) {
           helperText={
             <>
               {!isLocked && isEven && (
-                <Box color="warning.main">
+                <Box color="warning.main" component="span">
                   With this multiplier, every segment will need to have at least{" "}
                   <strong>{segmentMin}</strong> even number
-                  {segmentMin > 1 ? "s" : ""}.
+                  {segmentMin > 1 ? "s" : ""}.<br />
                 </Box>
               )}
               {!isLocked &&
                 isEven &&
                 evenSegments.some(({ val }) => val < segmentMin) && (
-                  <Box color="error.main">
+                  <Box color="error.main" component="span">
                     This will update your current segments.
                   </Box>
                 )}

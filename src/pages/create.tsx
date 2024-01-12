@@ -3,17 +3,17 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DoneOutlineIcon from "@mui/icons-material/DoneOutline";
 import TurnRightIcon from "@mui/icons-material/TurnRight";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
-import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 import MultiplierSelector from "@/components/create/MultiplierSelector";
+import Result from "@/components/create/Result";
 import { Loop } from "@/lib/collatzLoop";
 import type { StaticRequired } from "@/components/common/AppLayout";
 import type { EvenSegment } from "@/lib/types";
@@ -21,32 +21,13 @@ import type { EvenSegment } from "@/lib/types";
 let idCounter = 1;
 
 const init = {
+  isPending: false,
+  error: null,
   multiplier: 3,
   multiplierIsLocked: false,
   evenSegments: [] as EvenSegment[],
   loop: null,
 };
-
-const EquationHighlight = styled("span")(({ theme }) => ({
-  color: theme.palette.info.main,
-  fontWeight: theme.typography.fontWeightBold,
-}));
-
-const LoopContainer = styled("div")(({ theme }) => ({
-  borderWidth: "2px",
-  borderStyle: "solid",
-  borderColor: theme.palette.primary.light,
-  fontFamily: "monospace",
-  fontSize: "1rem",
-  maxHeight: "30rem",
-  overflow: "auto",
-  padding: theme.spacing(2),
-}));
-
-const ResultsText = styled("div")(({ theme }) => ({
-  ...theme.typography.h6,
-  wordBreak: "break-word",
-}));
 
 export const getStaticProps = (async () => {
   return {
@@ -62,6 +43,8 @@ export const getStaticProps = (async () => {
  */
 export default function Create() {
   const theme = useTheme();
+  const [isPending, setIsPending] = useState(init.isPending);
+  const [error, setError] = useState<Error | null>(init.error);
   const [multiplier, setMultiplier] = useState(init.multiplier);
   const [multiplierIsLocked, setMultiplierIsLocked] = useState(
     init.multiplierIsLocked,
@@ -72,12 +55,6 @@ export default function Create() {
   const [loop, setLoop] = useState<Loop | null>(init.loop);
   const [segmentMin, setSegmentMin] = useState(1);
   const segmentMax = 10000;
-
-  const equation = loop
-    ? `${loop.multiplier}x ${
-        loop.denominator.isNeg() ? "-" : "+"
-      } ${loop.denominator.abs().toFixed(0)}`
-    : "";
 
   function updateMultiplier(newMultiplier: number, newMin: number) {
     setMultiplier(newMultiplier);
@@ -116,10 +93,27 @@ export default function Create() {
     });
   }
 
-  function onFinishLoop(e: FormEvent<HTMLFormElement>) {
+  async function onFinish(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const evenSegmentsNum = evenSegments.map((segment) => segment.val);
-    setLoop(new Loop(multiplier, evenSegmentsNum));
+    setIsPending(true);
+    setError(null);
+
+    // HACK: required for React to show loading state on screen
+    await new Promise((resolve) => setTimeout(resolve));
+
+    try {
+      const loop = await Loop.create(multiplier, evenSegmentsNum);
+      setLoop(loop);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err);
+      } else {
+        setError(new Error("unknown issue occurred in createLoop()"));
+      }
+    }
+
+    setIsPending(false);
   }
 
   function onReset() {
@@ -127,6 +121,8 @@ export default function Create() {
     setMultiplierIsLocked(init.multiplierIsLocked);
     setEvenSegments(init.evenSegments);
     setLoop(init.loop);
+    setIsPending(init.isPending);
+    setError(init.error);
   }
 
   return (
@@ -174,7 +170,7 @@ export default function Create() {
 
           {/* Input Form */}
           {evenSegments.length > 0 && (
-            <Box component="form" onSubmit={onFinishLoop}>
+            <Box component="form" onSubmit={onFinish}>
               {/* Even Segments */}
               <Grid container columnSpacing={1} mt={2} rowSpacing={2}>
                 <Grid item xs={12}>
@@ -262,55 +258,7 @@ export default function Create() {
         </Grid>
         <Grid item xs={6}>
           {/* Result */}
-          <Paper component="section" elevation={1} sx={{ minHeight: "25rem" }}>
-            {!loop && (
-              <Box padding={4}>
-                <ResultsText sx={{ fontStyle: "italic", fontWeight: 400 }}>
-                  Your loop and its algorithm will appear here.
-                </ResultsText>
-              </Box>
-            )}
-            {loop && (
-              <Box padding={4}>
-                <ResultsText>
-                  Your Collatz loop algorithm is:
-                  <br />
-                  &bull; for{" "}
-                  <Box color={theme.loopNumber.odd} component="span">
-                    odd numbers
-                  </Box>
-                  , calculate <EquationHighlight>{equation}</EquationHighlight>
-                  <br />
-                  &bull; for{" "}
-                  <Box color={theme.loopNumber.even} component="span">
-                    even numbers
-                  </Box>
-                  , calculate <EquationHighlight>x / 2</EquationHighlight>
-                </ResultsText>
-                <ResultsText sx={{ marginTop: "1.5rem" }}>
-                  and starts at the number{" "}
-                  <EquationHighlight>
-                    {loop.numerator.toFixed(0)}
-                  </EquationHighlight>
-                  .
-                </ResultsText>
-                <LoopContainer sx={{ marginTop: 2 }}>
-                  {loop.sequence.map((loopElem, idx) => (
-                    <Box
-                      color={
-                        loopElem.mod(2).equals(0)
-                          ? theme.loopNumber.even
-                          : theme.loopNumber.odd
-                      }
-                      key={idx}
-                    >
-                      {loopElem.toFixed(0)}
-                    </Box>
-                  ))}
-                </LoopContainer>
-              </Box>
-            )}
-          </Paper>
+          <Result error={error} isPending={isPending} loop={loop} />
         </Grid>
       </Grid>
     </Container>

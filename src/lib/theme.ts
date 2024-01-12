@@ -27,7 +27,7 @@ export const roboto = Roboto({
 const theme = createTheme({
   loopNumber: {
     even: amber[900],
-    odd: teal.A700,
+    odd: teal[500],
   },
   typography: {
     fontFamily: roboto.style.fontFamily,
