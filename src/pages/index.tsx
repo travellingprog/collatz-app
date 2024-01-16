@@ -45,7 +45,7 @@ export default function Home() {
         >
           1 4 2 1 4 2 1 4 2 1 4 2 1 4 2 1
         </Typography>
-        <Title isMobile>
+        <Title isMobile={isMobile}>
           Collatz{" "}
           <Box component="span" color="secondary.light">
             Loops

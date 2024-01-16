@@ -29,7 +29,7 @@ export default function MoreInfo() {
       <Typography variant={isMobile ? "h3" : "h2"} component="h1">
         About This Website
       </Typography>
-      <Paragraph isMobile>
+      <Paragraph isMobile={isMobile}>
         The Collatz Conjecture is an unsolved problem in mathematics. The
         conjecture involves a sequence where you start at a number. To find the
         next number, you multiply it by 3 and add 1 when the number is odd, or
@@ -38,13 +38,13 @@ export default function MoreInfo() {
         number you begin with, you will always eventually reach the loop of 1,
         4, 2, 1.
       </Paragraph>
-      <Paragraph isMobile>
+      <Paragraph isMobile={isMobile}>
         This website was made utilizing a formula that will produce{" "}
         <strong>almost</strong> every possible loop, with the caveat that the
         addition can be any number instead of just +1, and the multiplier can be
         any number, not just -1.
       </Paragraph>
-      <Paragraph isMobile>
+      <Paragraph isMobile={isMobile}>
         The formula utilized does calculate every possible loop. However this
         website simplifies the formula in a few ways:
         <br />
@@ -54,7 +54,7 @@ export default function MoreInfo() {
         numbers has a minimum size of 1 (or specifically, 1 + the number of
         times the multiplier is a factor of the divisor)
       </Paragraph>
-      <Paragraph isMobile>
+      <Paragraph isMobile={isMobile}>
         If you wish to learn more about the Collatz conjecture, I highly
         recommend watching{" "}
         <Link href="https://www.youtube.com/watch?v=094y1Z2wpJg">
