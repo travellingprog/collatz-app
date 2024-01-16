@@ -72,7 +72,7 @@ export default function MultiplierSelector(props: Props) {
       onSubmit={isLocked ? unlockMultiplier : updateMultiplier}
       spacing={1}
     >
-      <Grid item xs={8}>
+      <Grid item xs={9} sm={8}>
         <BigNumberInput
           autoFocus
           disabled={isLocked}
@@ -104,7 +104,7 @@ export default function MultiplierSelector(props: Props) {
         />
       </Grid>
       {evenSegments.length === 0 && (
-        <Grid item xs={4} textAlign="left">
+        <Grid item xs={3} sm={4} textAlign="left">
           <Button
             disabled={isSubmitDisabled}
             size="large"
@@ -117,7 +117,7 @@ export default function MultiplierSelector(props: Props) {
         </Grid>
       )}
       {evenSegments.length > 0 && (
-        <Grid item xs={4} textAlign="left">
+        <Grid item xs={3} sm={4} textAlign="left">
           {isLocked && (
             <IconButton
               aria-label="edit multiplier"

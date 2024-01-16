@@ -159,7 +159,7 @@ export default function Create() {
       </Box>
 
       <Grid container mt={2} spacing={2}>
-        <Grid item mt={3} xs={6}>
+        <Grid item mt={3} xs={12} sm={6}>
           {/* Multiplier */}
           <MultiplierSelector
             evenSegments={evenSegments}
@@ -188,7 +188,7 @@ export default function Create() {
 
                 {evenSegments.map((segment, n) => (
                   <Fragment key={segment.id}>
-                    <Grid item xs={8}>
+                    <Grid item xs={9} sm={8}>
                       <BigNumberInput
                         disabled={!multiplierIsLocked}
                         fullWidth
@@ -201,7 +201,7 @@ export default function Create() {
                         value={segment.val}
                       />
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={3} sm={4}>
                       {evenSegments.length > 1 && (
                         <IconButton
                           aria-label="remove"
@@ -230,7 +230,7 @@ export default function Create() {
 
               {/* Finish or Reset */}
               <Grid container mt={6}>
-                <Grid item xs={8} textAlign="center">
+                <Grid item xs={9} sm={8} textAlign="center">
                   <Button
                     disabled={
                       !multiplierIsLocked ||
@@ -249,7 +249,7 @@ export default function Create() {
                     Finish Loop
                   </Button>
                 </Grid>
-                <Grid item xs={4} textAlign="left">
+                <Grid item xs={3} sm={4} textAlign="left">
                   <Button color="error" onClick={onReset} variant="text">
                     Reset
                   </Button>
@@ -258,7 +258,7 @@ export default function Create() {
             </Box>
           )}
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6}>
           {/* Result */}
           <Result error={error} isPending={isPending} loop={loop} />
         </Grid>

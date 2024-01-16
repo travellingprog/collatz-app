@@ -3,6 +3,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
 import Link from "@/components/common/Link";
+import { useIsMobile } from "@/lib/hooks";
 import type { StaticRequired } from "@/components/common/AppLayout";
 
 export const getStaticProps = (async () => {
@@ -14,17 +15,21 @@ export const getStaticProps = (async () => {
   };
 }) satisfies StaticRequired;
 
-const Paragraph = styled("p")({
-  fontSize: "1.5rem",
-});
+const Paragraph = styled("p", { shouldForwardProp: (p) => p !== "isMobile" })<{
+  isMobile: boolean;
+}>(({ isMobile }) => ({
+  fontSize: isMobile ? "1rem" : "1.5rem",
+}));
 
 export default function MoreInfo() {
+  const isMobile = useIsMobile();
+
   return (
-    <Container maxWidth="lg" sx={{ marginY: 8 }}>
-      <Typography variant="h2" component="h1">
+    <Container maxWidth="lg" sx={{ marginY: { xs: 4, sm: 8 } }}>
+      <Typography variant={isMobile ? "h3" : "h2"} component="h1">
         About This Website
       </Typography>
-      <Paragraph>
+      <Paragraph isMobile>
         The Collatz Conjecture is an unsolved problem in mathematics. The
         conjecture involves a sequence where you start at a number. To find the
         next number, you multiply it by 3 and add 1 when the number is odd, or
@@ -33,13 +38,13 @@ export default function MoreInfo() {
         number you begin with, you will always eventually reach the loop of 1,
         4, 2, 1.
       </Paragraph>
-      <Paragraph>
+      <Paragraph isMobile>
         This website was made utilizing a formula that will produce{" "}
         <strong>almost</strong> every possible loop, with the caveat that the
         addition can be any number instead of just +1, and the multiplier can be
         any number, not just -1.
       </Paragraph>
-      <Paragraph>
+      <Paragraph isMobile>
         The formula utilized does calculate every possible loop. However this
         website simplifies the formula in a few ways:
         <br />
@@ -49,7 +54,7 @@ export default function MoreInfo() {
         numbers has a minimum size of 1 (or specifically, 1 + the number of
         times the multiplier is a factor of the divisor)
       </Paragraph>
-      <Paragraph>
+      <Paragraph isMobile>
         If you wish to learn more about the Collatz conjecture, I highly
         recommend watching{" "}
         <Link href="https://www.youtube.com/watch?v=094y1Z2wpJg">

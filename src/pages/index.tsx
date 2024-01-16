@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
 import Link from "@/components/common/Link";
+import { useIsMobile } from "@/lib/hooks";
 import type { StaticRequired } from "@/components/common/AppLayout";
 
 export const getStaticProps = (async () => {
@@ -15,17 +16,21 @@ export const getStaticProps = (async () => {
   };
 }) satisfies StaticRequired;
 
-const Title = styled("h1")(({ theme }) => ({
+const Title = styled("h1", { shouldForwardProp: (p) => p !== "isMobile" })<{
+  isMobile: boolean;
+}>(({ theme, isMobile }) => ({
   color: theme.palette.primary.light,
-  fontSize: "6rem",
+  fontSize: isMobile ? "3rem" : "6rem",
   marginBottom: "1rem",
 }));
 
 export default function Home() {
+  const isMobile = useIsMobile();
+
   return (
     <Container maxWidth="lg" sx={{ marginY: 8 }}>
       <Box component="header" textAlign="center">
-        <Typography variant="h1" component="div">
+        <Typography variant={isMobile ? "h2" : "h1"} component="div">
           <Box component="span" color="primary.light">
             3
           </Box>
@@ -34,10 +39,13 @@ export default function Home() {
             1
           </Box>
         </Typography>
-        <Typography variant="subtitle1" component="div">
+        <Typography
+          variant={isMobile ? "subtitle2" : "subtitle1"}
+          component="div"
+        >
           1 4 2 1 4 2 1 4 2 1 4 2 1 4 2 1
         </Typography>
-        <Title>
+        <Title isMobile>
           Collatz{" "}
           <Box component="span" color="secondary.light">
             Loops
@@ -46,7 +54,7 @@ export default function Home() {
       </Box>
 
       <Box component="section" textAlign="center">
-        <Typography variant="h3" component="div">
+        <Typography variant={isMobile ? "h4" : "h3"} component="div">
           Create your own Collatz Loop
           <br /> that behaves how you wish.
         </Typography>
@@ -74,7 +82,7 @@ export default function Home() {
         </Button>
       </Box>
 
-      <Box component="footer" textAlign="center" mt={16}>
+      <Box component="footer" textAlign="center" mt={isMobile ? 10 : 16}>
         <Typography variant="body1">
           By Viktor Zivojinovic
           <br />
