@@ -61,7 +61,8 @@ export const NextLinkComposed = forwardRef<
 export type LinkProps = {
   activeClassName?: string;
   as?: NextLinkProps["as"];
-  href: NextLinkProps["href"];
+  // href: NextLinkProps["href"];
+  href: string;
   linkAs?: NextLinkProps["as"]; // Useful when the as prop is shallow by styled().
   noLinkStyle?: boolean;
 } & Omit<NextLinkComposedProps, "to" | "linkAs" | "href"> &
@@ -95,51 +96,50 @@ const Link = forwardRef<HTMLAnchorElement, LinkProps>(
     });
 
     // if the target is an external website, use a regular <a> or a Material UI link
-    const isExternal =
-      typeof href === "string" &&
-      (href.indexOf("http") === 0 || href.indexOf("mailto:") === 0);
-    if (isExternal) {
-      if (noLinkStyle) {
-        return (
-          <Anchor className={className} href={href} ref={ref} {...other} />
-        );
-      }
+    // const isExternal =
+    //   typeof href === "string" &&
+    //   (href.indexOf("http") === 0 || href.indexOf("mailto:") === 0);
 
-      return <MuiLink className={className} href={href} ref={ref} {...other} />;
-    }
-
-    const linkAs = linkAsProp || as;
-    const nextjsProps = {
-      to: href,
-      linkAs,
-      replace,
-      scroll,
-      shallow,
-      prefetch,
-      legacyBehavior,
-      locale,
-    };
-
+    // if (isExternal) {
     if (noLinkStyle) {
-      return (
-        <NextLinkComposed
-          className={className}
-          ref={ref}
-          {...nextjsProps}
-          {...other}
-        />
-      );
+      return <Anchor className={className} href={href} ref={ref} {...other} />;
     }
 
-    return (
-      <MuiLink
-        component={NextLinkComposed}
-        className={className}
-        ref={ref}
-        {...nextjsProps}
-        {...other}
-      />
-    );
+    return <MuiLink className={className} href={href} ref={ref} {...other} />;
+    // }
+
+    // const linkAs = linkAsProp || as;
+    // const nextjsProps = {
+    //   to: href,
+    //   linkAs,
+    //   replace,
+    //   scroll,
+    //   shallow,
+    //   prefetch,
+    //   legacyBehavior,
+    //   locale,
+    // };
+
+    // if (noLinkStyle) {
+    //   return (
+    //     <NextLinkComposed
+    //       className={className}
+    //       ref={ref}
+    //       {...nextjsProps}
+    //       {...other}
+    //     />
+    //   );
+    // }
+
+    // return (
+    //   <MuiLink
+    //     component={NextLinkComposed}
+    //     className={className}
+    //     ref={ref}
+    //     {...nextjsProps}
+    //     {...other}
+    //   />
+    // );
   },
 );
 
