@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import BigNumberInput from "@/components/common/BigNumberInput";
 import MultiplierSelector from "@/components/create/MultiplierSelector";
 import Result from "@/components/create/Result";
+import { BottomPageAd, UnderPageTitleAd } from "@/components/common/Ads";
 import { Loop } from "@/lib/collatzLoop";
 import { BigNumber, big, isNumber, max } from "@/lib/math";
 
@@ -127,142 +128,148 @@ export default function Create() {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ marginY: 4 }}>
-      {/* Example */}
-      <Box component="section" textAlign="center">
-        <Box display="inline-block" textAlign="left">
-          <Box>
-            <Typography variant="h3" component="div">
-              <Box component="span" color="primary.light">
-                3
-              </Box>
-              X +{" "}
-              <Box component="span" color="secondary.light">
-                1
-              </Box>
-            </Typography>
-          </Box>
+    <Box>
+      <UnderPageTitleAd />
+      <Container maxWidth="lg" sx={{ marginY: 4 }}>
+        {/* Example */}
+        <Box component="section" textAlign="center">
+          <Box display="inline-block" textAlign="left">
+            <Box>
+              <Typography variant="h3" component="div">
+                <Box component="span" color="primary.light">
+                  3
+                </Box>
+                X +{" "}
+                <Box component="span" color="secondary.light">
+                  1
+                </Box>
+              </Typography>
+            </Box>
 
-          <Box>
-            <TurnRightIcon
-              fontSize="large"
-              sx={(theme) => ({
-                color: theme.palette.primary.light,
-                transform: "rotate(270deg)",
-              })}
-            />
-            <Typography variant="h5" component="span" color="primary.light">
-              Multiplier
-            </Typography>
+            <Box>
+              <TurnRightIcon
+                fontSize="large"
+                sx={(theme) => ({
+                  color: theme.palette.primary.light,
+                  transform: "rotate(270deg)",
+                })}
+              />
+              <Typography variant="h5" component="span" color="primary.light">
+                Multiplier
+              </Typography>
+            </Box>
           </Box>
         </Box>
-      </Box>
 
-      <Grid container mt={2} spacing={2}>
-        <Grid item mt={3} xs={12} sm={6}>
-          {/* Multiplier */}
-          <MultiplierSelector
-            evenSegments={evenSegments}
-            isLocked={multiplierIsLocked}
-            multiplier={multiplier}
-            onLockUpdate={setMultiplierIsLocked}
-            onUpdate={updateMultiplier}
-          />
+        <Grid container mt={2} spacing={2}>
+          <Grid item mt={3} xs={12} sm={6}>
+            {/* Multiplier */}
+            <MultiplierSelector
+              evenSegments={evenSegments}
+              isLocked={multiplierIsLocked}
+              multiplier={multiplier}
+              onLockUpdate={setMultiplierIsLocked}
+              onUpdate={updateMultiplier}
+            />
 
-          {/* Input Form */}
-          {evenSegments.length > 0 && (
-            <Box component="form" onSubmit={onFinish}>
-              {/* Even Segments */}
-              <Grid container columnSpacing={1} mt={2} rowSpacing={2}>
-                <Grid item xs={12}>
-                  Define the lengths of your{" "}
-                  <Box color={theme.loopNumber.even} component="span">
-                    Even Number
-                  </Box>{" "}
-                  segments
-                  <Typography variant="caption" component="div" mb={1}>
-                    min length: {segmentMin.toFixed(0)}, max length:{" "}
-                    {segmentMax.toFixed(0)}
-                  </Typography>
+            {/* Input Form */}
+            {evenSegments.length > 0 && (
+              <Box component="form" onSubmit={onFinish}>
+                {/* Even Segments */}
+                <Grid container columnSpacing={1} mt={2} rowSpacing={2}>
+                  <Grid item xs={12}>
+                    Define the lengths of your{" "}
+                    <Box color={theme.loopNumber.even} component="span">
+                      Even Number
+                    </Box>{" "}
+                    segments
+                    <Typography variant="caption" component="div" mb={1}>
+                      min length: {segmentMin.toFixed(0)}, max length:{" "}
+                      {segmentMax.toFixed(0)}
+                    </Typography>
+                  </Grid>
+
+                  {evenSegments.map((segment, n) => (
+                    <Fragment key={segment.id}>
+                      <Grid item xs={9} sm={8}>
+                        <BigNumberInput
+                          disabled={!multiplierIsLocked}
+                          fullWidth
+                          id={`even-segment-${segment.id}`}
+                          label={`Segment ${n + 1}`}
+                          max={segmentMax}
+                          min={segmentMin}
+                          name={`even-segment-${segment.id}`}
+                          onChange={(val) =>
+                            onSegmentChange(val, n, segment.id)
+                          }
+                          value={segment.val}
+                        />
+                      </Grid>
+                      <Grid item xs={3} sm={4}>
+                        {evenSegments.length > 1 && (
+                          <IconButton
+                            aria-label="remove"
+                            onClick={() => onRemoveSegment(n)}
+                            size="large"
+                            sx={{ height: (th) => th.spacing(7) }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        )}
+                      </Grid>
+                    </Fragment>
+                  ))}
+
+                  <Grid item xs={12}>
+                    <Button
+                      disabled={!multiplierIsLocked}
+                      onClick={onAddSegment}
+                      startIcon={<AddCircleOutlineIcon />}
+                      variant="outlined"
+                    >
+                      Add Segment
+                    </Button>
+                  </Grid>
                 </Grid>
 
-                {evenSegments.map((segment, n) => (
-                  <Fragment key={segment.id}>
-                    <Grid item xs={9} sm={8}>
-                      <BigNumberInput
-                        disabled={!multiplierIsLocked}
-                        fullWidth
-                        id={`even-segment-${segment.id}`}
-                        label={`Segment ${n + 1}`}
-                        max={segmentMax}
-                        min={segmentMin}
-                        name={`even-segment-${segment.id}`}
-                        onChange={(val) => onSegmentChange(val, n, segment.id)}
-                        value={segment.val}
-                      />
-                    </Grid>
-                    <Grid item xs={3} sm={4}>
-                      {evenSegments.length > 1 && (
-                        <IconButton
-                          aria-label="remove"
-                          onClick={() => onRemoveSegment(n)}
-                          size="large"
-                          sx={{ height: (th) => th.spacing(7) }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      )}
-                    </Grid>
-                  </Fragment>
-                ))}
-
-                <Grid item xs={12}>
-                  <Button
-                    disabled={!multiplierIsLocked}
-                    onClick={onAddSegment}
-                    startIcon={<AddCircleOutlineIcon />}
-                    variant="outlined"
-                  >
-                    Add Segment
-                  </Button>
+                {/* Finish or Reset */}
+                <Grid container mt={6}>
+                  <Grid item xs={9} sm={8} textAlign="center">
+                    <Button
+                      disabled={
+                        !multiplierIsLocked ||
+                        evenSegments.some(
+                          ({ val }) =>
+                            !isNumber(val) ||
+                            val.lt(segmentMin) ||
+                            val.gt(segmentMax),
+                        )
+                      }
+                      size="large"
+                      startIcon={<DoneOutlineIcon />}
+                      type="submit"
+                      variant="contained"
+                    >
+                      Finish Loop
+                    </Button>
+                  </Grid>
+                  <Grid item xs={3} sm={4} textAlign="left">
+                    <Button color="error" onClick={onReset} variant="text">
+                      Reset
+                    </Button>
+                  </Grid>
                 </Grid>
-              </Grid>
-
-              {/* Finish or Reset */}
-              <Grid container mt={6}>
-                <Grid item xs={9} sm={8} textAlign="center">
-                  <Button
-                    disabled={
-                      !multiplierIsLocked ||
-                      evenSegments.some(
-                        ({ val }) =>
-                          !isNumber(val) ||
-                          val.lt(segmentMin) ||
-                          val.gt(segmentMax),
-                      )
-                    }
-                    size="large"
-                    startIcon={<DoneOutlineIcon />}
-                    type="submit"
-                    variant="contained"
-                  >
-                    Finish Loop
-                  </Button>
-                </Grid>
-                <Grid item xs={3} sm={4} textAlign="left">
-                  <Button color="error" onClick={onReset} variant="text">
-                    Reset
-                  </Button>
-                </Grid>
-              </Grid>
-            </Box>
-          )}
+              </Box>
+            )}
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            {/* Result */}
+            <Result error={error} isPending={isPending} loop={loop} />
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          {/* Result */}
-          <Result error={error} isPending={isPending} loop={loop} />
-        </Grid>
-      </Grid>
-    </Container>
+      </Container>
+      <BottomPageAd />
+    </Box>
   );
 }
