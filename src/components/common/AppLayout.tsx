@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import HelpIcon from "@mui/icons-material/Help";
 import InfoIcon from "@mui/icons-material/Info";
 import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
@@ -50,6 +51,11 @@ const navigationItems: NavItemProps[] = [
   {
     label: "More Info",
     href: "/more-info",
+    icon: <HelpIcon color="info" />,
+  },
+  {
+    label: "About",
+    href: "/about",
     icon: <InfoIcon color="info" />,
   },
 ];
