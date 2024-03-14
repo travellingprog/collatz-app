@@ -1,8 +1,8 @@
 import Box from "@mui/material/Box";
 import MuiContainer from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import type { ReactNode } from "react";
 import { styled } from "@mui/material/styles";
+import type { ReactNode } from "react";
 
 import { BottomPageAd } from "@/components/common/Ads";
 
@@ -29,9 +29,11 @@ function Title({ children, isMobile }: TitleProps) {
   );
 }
 
-const Paragraph = styled("p", { shouldForwardProp: (p) => p !== "isMobile" })<{
-  isMobile: boolean;
-}>(({ isMobile }) => ({
+type ParagraphProps = { children: ReactNode; isMobile: boolean };
+
+const Paragraph = styled("p", {
+  shouldForwardProp: (p) => p !== "isMobile",
+})<ParagraphProps>(({ isMobile }) => ({
   fontSize: isMobile ? "1rem" : "1.5rem",
 }));
 

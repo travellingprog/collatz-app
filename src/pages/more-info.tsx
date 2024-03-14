@@ -1,4 +1,5 @@
-import Link from "@/components/common/Link";
+import { styled } from "@mui/material/styles";
+
 import TextPage from "@/components/common/TextPage";
 import { useIsMobile } from "@/lib/hooks";
 import type { StaticRequired } from "@/components/common/AppLayout";
@@ -11,6 +12,13 @@ export const getStaticProps = (async () => {
     },
   };
 }) satisfies StaticRequired;
+
+/** A responsive iframe */
+const IFrame = styled("iframe")({
+  aspectRatio: "16/9",
+  maxWidth: 560,
+  width: "100%",
+});
 
 /** A page that provides information on the website application */
 export default function MoreInfo() {
@@ -45,12 +53,16 @@ export default function MoreInfo() {
       </TextPage.Paragraph>
       <TextPage.Paragraph isMobile={isMobile}>
         If you wish to learn more about the Collatz conjecture, I highly
-        recommend watching{" "}
-        <Link href="https://www.youtube.com/watch?v=094y1Z2wpJg">
-          Veritasium&rsquo;s video on the subject
-        </Link>
-        .
+        recommend watching Veritasium&rsquo;s video on the subject:
       </TextPage.Paragraph>
+      <IFrame
+        src="https://www.youtube-nocookie.com/embed/094y1Z2wpJg?si=QyqwdxKxV_P-eydT"
+        title="Veritasium video on Collatz conjecture"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+        loading="lazy"
+      ></IFrame>
     </TextPage.Container>
   );
 }
