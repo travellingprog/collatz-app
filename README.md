@@ -1,34 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Collatz Loops
 
-## Getting Started
+## About
 
-First, run the development server:
+This is the code behind the website https://www.collatzloops.com. The website creates numerical sequences that loop similarly to the [Collatz Conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture). The algorithm to derive these "loops" was created by Viktor Zivojinovic as a Python script. For the purpose of this website, that script was translated into a Typescript equivalent that can run on the front-end.
 
-```bash
-pnpm dev
-```
+The source code has been made open-source to serve as a portfolio project for the developer, [Erick Cardenas Mendez](https://www.linkedin.com/in/erickcm/).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Running For Development
 
-You can start editing the page by modifying `src/pages/index.tsx`. The page auto-updates as you edit the file.
+Prerequisites:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- [FNM](https://github.com/Schniz/fnm) (or alternatively [NVM](https://github.com/nvm-sh/nvm)) for Node version management
+- [pnpm](https://pnpm.io/)
 
-The `src/pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Once the prerequisites are installed:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. Install the Node version specified in **.nvmrc**:
+   ```bash
+   fnm install
+   ```
+1. Install project dependencies:
+   ```bash
+   pnpm install
+   ```
+1. Run the development server
+   ```bash
+   pnpm run dev
+   ```
 
-## Learn More
+Then open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-To learn more about Next.js, take a look at the following resources:
+## Other Development Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`pnpm run build`: Build out the website as a static site ([Next.js docs](https://nextjs.org/docs/pages/building-your-application/deploying/static-exports)).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+`pnpm run prettier`: Auto-format the source code using [Prettier](https://prettier.io/).
 
-## Deploy on Vercel
+`pnpm run lint`: Check for linting errors, as defined by the ESLint configuration.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`pnpm run test`: Run the [Jest](https://jestjs.io/) tests under watch mode.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Tech Stack
+
+The following languages/libraries/frameworks were used in the creation of this application.
+
+- [Typescript](https://www.typescriptlang.org/)
+- [React](https://react.dev/)
+- [Next.js](https://nextjs.org/)
+- [MaterialUI](https://mui.com/)
+- [Math.js](https://mathjs.org/)
+- [Jest](https://jestjs.io/)
