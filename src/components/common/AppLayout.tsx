@@ -137,14 +137,21 @@ export default function AppLayout(props: AppLayoutProps) {
         <Toolbar disableGutters sx={{ maxHeight: 64, position: "relative" }}>
           <Box>
             <Box
+              alignItems="center"
               display="flex"
+              height="100%"
               justifyContent="center"
               left="0"
               top="0"
               position="absolute"
               width={{ xs: "100%", sm: drawerWidth }}
             >
-              <Link href="/" noLinkStyle aria-label="Go to homepage">
+              <Link
+                href="/"
+                noLinkStyle
+                aria-label="Go to homepage"
+                sx={{ lineHeight: 1 }}
+              >
                 <Image src={logo} alt="logo" height={48} />
               </Link>
             </Box>
