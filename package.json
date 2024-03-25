@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build-deployment": "vitest run && next build",
     "prettier": "prettier . --write",
     "lint": "next lint",
     "test": "vitest"
