@@ -1,7 +1,7 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  */
-import { describe, expect, test } from "@jest/globals";
+import { describe, expect, test } from "vitest";
 import { Loop } from "@/lib/collatzLoop";
 import { big } from "@/lib/math";
 
