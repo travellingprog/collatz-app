@@ -1,6 +1,6 @@
 /**
  * The content of this file was copied from the official MaterialUI + NextJS Pages example
- * https://github.com/mui/material-ui/blob/e8773b238283c8174be427cca756a238e7e3545a/examples/material-ui-nextjs-pages-router-ts/src/createEmotionCache.ts
+ * https://github.com/mui/material-ui/blob/v5.14.17/examples/material-ui-nextjs-pages-router-ts/src/createEmotionCache.ts
  *
  * It is essentially here to avoid issues with SSG rendering and
  * to avoid creating <style> tags inside the <body>.

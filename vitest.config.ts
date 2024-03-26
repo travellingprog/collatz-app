@@ -7,10 +7,13 @@ export default defineConfig({
     target: "es2017", // match tsconfig.json
   },
   plugins: [react()],
-  test: {
+  resolve: {
     alias: {
       "@/": new URL("./src/", import.meta.url).pathname,
     },
+  },
+  test: {
     environment: "jsdom",
+    include: ["__tests__/**/*.{test,spec}.?(c|m)[jt]s?(x)"],
   },
 });

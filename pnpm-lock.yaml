@@ -43,6 +43,9 @@ devDependencies:
   '@testing-library/react':
     specifier: ^14.1.2
     version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
+  '@types/css-mediaquery':
+    specifier: ^0.1.4
+    version: 0.1.4
   '@types/node':
     specifier: ^20
     version: 20.8.6
@@ -55,6 +58,9 @@ devDependencies:
   '@vitejs/plugin-react':
     specifier: ^4.2.1
     version: 4.2.1(vite@5.2.6)
+  css-mediaquery:
+    specifier: ^0.1.2
+    version: 0.1.2
   eslint:
     specifier: ^8
     version: 8.51.0
@@ -1264,6 +1270,10 @@ packages:
       '@babel/types': 7.23.0
     dev: true
 
+  /@types/css-mediaquery@0.1.4:
+    resolution: {integrity: sha512-DZyHAz716ZUctpqkUU2COwUoZ4gI6mZK2Q1oIz/fvNS6XHVpKSJgDnE7vRxZUBn9vjJHDVelCVW0dkshKOLFsA==}
+    dev: true
+
   /@types/estree@1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
     dev: true
@@ -1808,6 +1818,10 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+    dev: true
+
+  /css-mediaquery@0.1.2:
+    resolution: {integrity: sha512-COtn4EROW5dBGlE/4PiKnh6rZpAPxDeFLaEEwt4i10jpDMFt2EhQGS79QmmrO+iKCHv0PU/HrOWEhijFd1x99Q==}
     dev: true
 
   /cssstyle@4.0.1:
