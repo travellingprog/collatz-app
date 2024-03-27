@@ -47,7 +47,12 @@ const Result = memo(function Result(props: Props) {
     : "";
 
   return (
-    <Paper component="section" elevation={1} sx={{ minHeight: "25rem" }}>
+    <Paper
+      component="section"
+      elevation={1}
+      sx={{ minHeight: "25rem" }}
+      aria-label="Result"
+    >
       {!loop && !isPending && !error && (
         <Box padding={4}>
           <ResultsText sx={{ fontStyle: "italic", fontWeight: 400 }}>
