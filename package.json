@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "build-deployment": "vitest run && next build",
+    "build": "NODE_ENV=production next build",
+    "build-deployment": "pnpm run test-once && pnpm run build",
     "prettier": "prettier . --write",
     "lint": "next lint",
-    "test": "vitest"
+    "test": "vitest",
+    "test-once": "NODE_ENV=test vitest run"
   },
   "dependencies": {
     "@emotion/cache": "^11.11.0",
