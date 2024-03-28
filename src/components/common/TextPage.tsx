@@ -32,7 +32,7 @@ function Title({ children, isMobile }: TitleProps) {
 type ParagraphProps = { children: ReactNode; isMobile: boolean };
 
 const Paragraph = styled("p", {
-  shouldForwardProp: (p) => p !== "isMobile",
+  shouldForwardProp: (prop) => prop !== "isMobile",
 })<ParagraphProps>(({ isMobile }) => ({
   fontSize: isMobile ? "1rem" : "1.5rem",
 }));

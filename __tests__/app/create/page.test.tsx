@@ -4,7 +4,7 @@ import { render, cleanup, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import theme from "@/lib/theme";
-import Create from "@/pages/create";
+import Create from "@/app/create/page";
 
 // see https://github.com/vercel/next.js/issues/59701
 vi.mock("next/font/google", () => ({

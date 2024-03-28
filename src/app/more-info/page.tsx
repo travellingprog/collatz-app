@@ -1,17 +1,8 @@
+"use client";
 import { styled } from "@mui/material/styles";
 
 import TextPage from "@/components/common/TextPage";
 import { useIsMobile } from "@/lib/hooks";
-import type { StaticRequired } from "@/components/common/AppLayout";
-
-export const getStaticProps = (async () => {
-  return {
-    props: {
-      title: "More Info",
-      description: "Information on this Collatz Loops application",
-    },
-  };
-}) satisfies StaticRequired;
 
 /** A responsive iframe */
 const IFrame = styled("iframe")({

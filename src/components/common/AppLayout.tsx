@@ -1,4 +1,4 @@
-import Head from "next/head";
+"use client";
 import Image from "next/image";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import HelpIcon from "@mui/icons-material/Help";
@@ -16,21 +16,13 @@ import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import type { GetStaticProps } from "next";
 import type { ReactNode } from "react";
 
 import Link from "@/components/common/Link";
 import { useIsMobile } from "@/lib/hooks";
 import logo from "../../../public/logo.svg";
 
-export type StaticProps = {
-  description: string;
-  title?: string;
-};
-
-export type StaticRequired = GetStaticProps<StaticProps>;
-
-type AppLayoutProps = StaticProps & {
+type AppLayoutProps = {
   children: ReactNode;
 };
 
@@ -98,10 +90,7 @@ function NavList(props: NavListProps) {
 /**
  * The layout that wraps the main page content.
  */
-export default function AppLayout(props: AppLayoutProps) {
-  const { children, description, title } = props;
-  const pageTitle = `${title ? title + " | " : ""}Collatz Loops`;
-
+export default function AppLayout({ children }: AppLayoutProps) {
   const isMobile = useIsMobile();
 
   // mobile navigation state variables and methods
@@ -122,14 +111,6 @@ export default function AppLayout(props: AppLayoutProps) {
 
   return (
     <>
-      <Head>
-        <title>{pageTitle}</title>
-        <meta name="description" content={description} />
-
-        {/* Cannot be in _document: https://nextjs.org/docs/messages/no-document-viewport-meta */}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-
       <AppBar
         position="sticky"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + (isMobile ? -1 : 1) }}

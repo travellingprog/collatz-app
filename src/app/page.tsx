@@ -1,3 +1,4 @@
+"use client";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -6,15 +7,6 @@ import { styled } from "@mui/material/styles";
 
 import Link from "@/components/common/Link";
 import { useIsMobile } from "@/lib/hooks";
-import type { StaticRequired } from "@/components/common/AppLayout";
-
-export const getStaticProps = (async () => {
-  return {
-    props: {
-      description: "Create your own Collatz Loop with your desired behavior",
-    },
-  };
-}) satisfies StaticRequired;
 
 const Title = styled("h1", { shouldForwardProp: (p) => p !== "isMobile" })<{
   isMobile: boolean;

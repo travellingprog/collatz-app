@@ -1,16 +1,6 @@
-import Link from "@/components/common/Link";
+"use client";
 import TextPage from "@/components/common/TextPage";
 import { useIsMobile } from "@/lib/hooks";
-import type { StaticRequired } from "@/components/common/AppLayout";
-
-export const getStaticProps = (async () => {
-  return {
-    props: {
-      title: "About",
-      description: "Information on the application authors",
-    },
-  };
-}) satisfies StaticRequired;
 
 /** A page that provides information on the website authors */
 export default function About() {

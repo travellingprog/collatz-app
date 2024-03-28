@@ -1,3 +1,4 @@
+"use client";
 import { useState, FormEvent, Fragment } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -18,7 +19,6 @@ import { BottomPageAd, UnderPageTitleAd } from "@/components/common/Ads";
 import { Loop } from "@/lib/collatzLoop";
 import { BigNumber, big, isNumber, max } from "@/lib/math";
 
-import type { StaticRequired } from "@/components/common/AppLayout";
 import type { EvenSegment } from "@/lib/types";
 
 let idCounter = 1;
@@ -33,15 +33,6 @@ const init = {
   loop: null,
   segmentMin: Loop.calcSegmentMin(initMultiplier),
 };
-
-export const getStaticProps = (async () => {
-  return {
-    props: {
-      title: "Create",
-      description: "Create your own Collatz Loop with your desired behavior",
-    },
-  };
-}) satisfies StaticRequired;
 
 /**
  * The page where the user can create their own loop.
